@@ -138,7 +138,6 @@ export default {
   	滚动检测方法
   	*/
     function handleScroll() {
-      console.log("dsdsasd")
       // 计算高度
       const scrollTop = props.pageMode
         ? window.pageYOffset

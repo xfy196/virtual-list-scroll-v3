@@ -58,7 +58,6 @@ export default {
       () => state.dataAmt,
       (dataAmt) => {
         state.data = this.dataConstructor(dataAmt, state.isFixedHeight);
-        // this.$forceUpdate();
       }
     );
     watch(
@@ -68,8 +67,7 @@ export default {
     watch(
       () => state.isFixedHeight,
       (isFixedHeight) => {
-        state.data = this.dataConstructor(state.dataAmt, isFixedHeight);
-        // this.$forceUpdate();
+        state.data = dataConstructor(state.dataAmt, isFixedHeight);
       }
     );
     // methods
