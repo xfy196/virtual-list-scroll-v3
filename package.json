@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "name": "virtual-list-scroll-v3",
+  "main": "./src/VirtualListScroll/index.vue",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.0.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.2.3",
+    "@vue/compiler-sfc": "^3.0.5",
+    "vite": "^2.3.7"
+  },
+  "homepage": "https://virtual-list-scroll.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xfy196/virtual-list-scroll"
+  },
+  "keywords": [
+    "virtual",
+    "list",
+    "scroll"
+  ],
+  "description": "一个可以让大量列表渲染无压力的虚拟滚动列表",
+  "license": "MIT",
+  "author": "小小荧"
+}
