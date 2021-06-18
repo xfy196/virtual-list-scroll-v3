@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "virtual-list-scroll-v3",
   "main": "./src/VirtualListScroll/index.vue",
   "scripts": {
@@ -15,10 +15,10 @@
     "@vue/compiler-sfc": "^3.0.5",
     "vite": "^2.3.7"
   },
-  "homepage": "https://virtual-list-scroll.vercel.app/",
+  "homepage": "https://virtual-list-scroll-v3.vercel.app/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xfy196/virtual-list-scroll"
+    "url": "https://github.com/xfy196/virtual-list-scroll-v3"
   },
   "keywords": [
     "virtual",
