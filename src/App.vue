@@ -57,7 +57,7 @@ export default {
     watch(
       () => state.dataAmt,
       (dataAmt) => {
-        state.data = this.dataConstructor(dataAmt, state.isFixedHeight);
+        state.data = dataConstructor(dataAmt, state.isFixedHeight);
       }
     );
     watch(
