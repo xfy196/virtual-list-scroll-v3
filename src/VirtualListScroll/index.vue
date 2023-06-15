@@ -29,6 +29,7 @@ import {
   onUnmounted,
   computed,
 } from "vue";
+import { getScrollParent } from './scroll-parent';
 export default {
   props: {
     // 具体的列表的数组
@@ -47,7 +48,7 @@ export default {
     // 假定是window有滚动条还是虚拟滚动区有滚动条
     pageMode: {
       type: Boolean,
-      required: true,
+      default: false,
     },
   },
   setup(props, ctx) {
@@ -60,10 +61,9 @@ export default {
       transformedData: [],
     });
     const vb = ref(null);
-    // 判断页面的模式
-    if (props.pageMode) {
-      window.addEventListener("scroll", handleScroll);
-    }
+    const vbOffSet = ref(0);
+    let scrollableElement = ref(null);
+
     watch(
       () => props.data,
       (data, preData) => {
@@ -82,8 +82,15 @@ export default {
     );
 
     onMounted(() => {
+      // Determine the scrollable parent element
+      scrollableElement = getListenerTarget();
+      // Determine the offsetTop
+      const { top } = vb.value.getBoundingClientRect();
+      vbOffSet.value = top;      
+      // 判断页面的模式
       if (props.pageMode) {
-        computeTransformedData(props.data);
+        computeTransformedData(props.data);       
+        scrollableElement.addEventListener('scroll', handleScroll);
       }
       updateVb(0);
     });
@@ -91,17 +98,18 @@ export default {
     onUnmounted(() => {
       // 组价销毁时清除之前的事件
       if (props.pageMode) {
-        window.removeEventListener("scroll", handleScroll);
+        scrollableElement.removeEventListener("scroll", handleScroll);
       }
     });
     watch(
       () => props.pageMode,
       (pageMode, prevPageMode) => {
         if (pageMode) {
-          window.addEventListener("scroll", handleScroll);
+          scrollableElement = getListenerTarget();
+          scrollableElement.addEventListener("scroll", handleScroll);
         } else {
           // 如果不存在新的之变化直接清楚这个scorll的滚动监听
-          window.removeEventListener("scroll", handleScroll);
+          scrollableElement.removeEventListener("scroll", handleScroll);
         }
         // 值发生变化直接需要重新计算
         computeTransformedData(props.data);
@@ -140,7 +148,7 @@ export default {
     function handleScroll() {
       // 计算高度
       const scrollTop = props.pageMode
-        ? window.pageYOffset
+        ? (scrollableElement.scrollTop || scrollableElement.pageYOffset)
         : vb.value.scrollTop;
       // 为了必要滚动过快需要使用动画帧
       window.requestAnimationFrame(() => {
@@ -148,6 +156,19 @@ export default {
         updateVb(scrollTop);
       });
     }
+
+    /**
+     * get listener target
+     */
+     function getListenerTarget() {
+      let target = getScrollParent(vb.value);
+      // Fix global scroll target for Chrome and Safari
+      if (window.document && (target === window.document.documentElement || target === window.document.body)) {
+        target = window;
+      }
+      return target;
+    }
+
     /**
      * 存在指定的盒子高度寻找开始的下表
      */
@@ -278,7 +299,7 @@ export default {
     function updateVb(scrollTop) {
       // 计算滚动可视区真实的高度
       const viewportHeight = props.pageMode ? window.innerHeight : props.height;
-      state.viewportBegin = scrollTop;
+      state.viewportBegin = props.pageMode ? scrollTop - vbOffSet.value : scrollTop;
       state.viewportEnd = scrollTop + viewportHeight;
       state.renderList = findBlocksInViewport(
         state.viewportBegin,
