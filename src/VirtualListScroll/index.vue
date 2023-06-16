@@ -61,7 +61,6 @@ export default {
       transformedData: [],
     });
     const vb = ref(null);
-    const vbOffSet = ref(0);
     let scrollableElement = ref(null);
 
     watch(
@@ -83,10 +82,7 @@ export default {
 
     onMounted(() => {
       // Determine the scrollable parent element
-      scrollableElement = getListenerTarget();
-      // Determine the offsetTop
-      const { top } = vb.value.getBoundingClientRect();
-      vbOffSet.value = top;      
+      scrollableElement = getListenerTarget();  
       // 判断页面的模式
       if (props.pageMode) {
         computeTransformedData(props.data);       
@@ -305,7 +301,7 @@ export default {
     function updateVb(scrollTop) {
       // 计算滚动可视区真实的高度
       const viewportHeight = props.pageMode ? window.innerHeight : props.height;
-      state.viewportBegin = props.pageMode ? scrollTop - vbOffSet.value : scrollTop;
+      state.viewportBegin = props.pageMode ? scrollTop - vb.value.offsetTop : scrollTop;
       state.viewportEnd = scrollTop + viewportHeight;
       state.renderList = findBlocksInViewport(
         state.viewportBegin,
