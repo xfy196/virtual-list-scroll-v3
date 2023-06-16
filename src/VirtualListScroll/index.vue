@@ -12,7 +12,7 @@
       v-for="item in renderList"
       :key="item.id"
     >
-      <slot v-bind="item"></slot>
+    <slot v-bind="item"></slot>
     </div>
     <div :style="{ height: `${offsetBot}px` }"></div>
   </div>
@@ -134,7 +134,7 @@ export default {
         // 每一次的虚拟列表的第一个的scrolTop
         let rt = [curHeight];
         oldArr.forEach((item) => {
-          curHeight += item.height;
+          curHeight += item.height ?? props.flxedBlockHeight;
           // 每一次计算后端的scrollTop
           rt.push(curHeight);
         });
@@ -148,7 +148,7 @@ export default {
     function handleScroll() {
       // 计算高度
       const scrollTop = props.pageMode
-        ? (scrollableElement.scrollTop || scrollableElement.pageYOffset)
+        ? (scrollableElement.scrollTop || scrollableElement.pageYOffset) ?? 0
         : vb.value.scrollTop;
       // 为了必要滚动过快需要使用动画帧
       window.requestAnimationFrame(() => {
@@ -287,7 +287,13 @@ export default {
                 transformedData[hi]
               : 0;
         }
-        return data.slice(lo, hi);
+        // Determine indexes of the first and last items in viewport
+        const sliceData = data.slice(lo, hi);
+        const arrayRange = Array.from({length: hi - lo }, (_, i) => lo + i);
+        sliceData.forEach((item, index) => {
+          item.index = arrayRange[index];
+        });
+        return sliceData;
       } else {
         state.offsetTop = 0;
         state.offsetBot = 0;
